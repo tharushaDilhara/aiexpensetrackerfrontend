@@ -1,8 +1,32 @@
-import React from 'react';
-import { X, Sparkles, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Sparkles, Upload, Image as ImageIcon } from 'lucide-react';
 
-export default function AddExpenseModal({ isOpen, onClose, darkMode }) {
+export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse }) {
+  const [receiptText, setReceiptText] = useState('');
+  const [uploadedImage, setUploadedImage] = useState(null);
+
   if (!isOpen) return null;
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setUploadedImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAnalyse = () => {
+    // Simulate AI extraction
+    const extracted = {
+      title: receiptText.includes('Starbucks') ? 'Starbucks Coffee' : 'Grocery Store',
+      category: receiptText.includes('Uber') ? 'Transport' : 'Food',
+      amount: '48.50',
+      date: 'Dec 11, 2025 • 3:24 PM',
+    };
+    onAnalyse(extracted); // Pass to parent
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
@@ -20,14 +44,16 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode }) {
               Add New Expense
             </h2>
             <p className={`mt-3 text-base ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Paste receipt text or upload a bill image — AI will extract everything automatically
+              Paste receipt text or upload image
             </p>
           </div>
 
           <textarea
+            value={receiptText}
+            onChange={(e) => setReceiptText(e.target.value)}
             placeholder="Paste receipt text here..."
             rows={7}
-            className={`w-full p-5 rounded-2xl border text-base resize-none focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition ${
+            className={`w-full p-5 rounded-2xl border text-base resize-none focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition mb-6 ${
               darkMode ? 'bg-gray-800/60 border-gray-700 text-white' : 'bg-gray-100/70 border-gray-300 text-gray-900'
             }`}
           />
@@ -39,14 +65,29 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode }) {
             <span className={`relative px-4 bg-${darkMode ? 'gray-900/95' : 'white/95'} text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>OR</span>
           </div>
 
-          <label className="flex flex-col items-center justify-center w-full h-40 border-3 border-dashed border-purple-400/40 rounded-2xl cursor-pointer hover:bg-purple-50/50 dark:hover:bg-gray-800/40 transition group">
-            <Upload className="w-12 h-12 text-purple-500 mb-3 group-hover:scale-110 transition" />
-            <span className="text-purple-600 dark:text-purple-400 font-semibold text-lg">Click to upload bill photo</span>
-            <input type="file" accept="image/*" className="hidden" />
-          </label>
+          {!uploadedImage ? (
+            <label className="flex flex-col items-center justify-center w-full h-48 border-3 border-dashed border-purple-400/40 rounded-2xl cursor-pointer hover:bg-purple-50/50 dark:hover:bg-gray-800/40 transition group">
+              <Upload className="w-14 h-14 text-purple-500 mb-3 group-hover:scale-110 transition" />
+              <span className="text-purple-600 dark:text-purple-400 font-semibold text-lg">Upload bill photo</span>
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            </label>
+          ) : (
+            <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-purple-300/50">
+              <img src={uploadedImage} alt="Receipt" className="w-full h-auto max-h-80 object-contain" />
+              <button onClick={() => setUploadedImage(null)} className="absolute top-3 right-3 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          )}
 
-          <div className="mt-10 pt-4">
-            <button className="w-full py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-xl rounded-2xl shadow-2xl hover:scale-105 transition flex items-center justify-center gap-4">
+          <div className="mt-10">
+            <button
+              onClick={handleAnalyse}
+              disabled={!receiptText && !uploadedImage}
+              className={`w-full py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-xl rounded-2xl shadow-2xl hover:scale-105 transition flex items-center justify-center gap-4 ${
+                !receiptText && !uploadedImage ? 'opacity-60 cursor-not-allowed' : ''
+              }`}
+            >
               <Sparkles className="w-7 h-7" />
               Analyse with AI
             </button>

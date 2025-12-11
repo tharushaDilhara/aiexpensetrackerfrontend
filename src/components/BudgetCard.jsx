@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget, saveBudget, totalSpent, remaining }) {
   return (
-    <div className={`rounded-3xl p-8 shadow-2xl backdrop-blur-xl border hidden ${darkMode ? 'bg-gray-800/70 border-gray-700' : 'bg-white/90 border-white/60'} mb-12`}>
+    <div className={`rounded-3xl p-8 shadow-2xl backdrop-blur-xl border  ${darkMode ? 'bg-gray-800/70 border-gray-700' : 'bg-white/90 border-white/60'} mb-12`}>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Monthly Budget

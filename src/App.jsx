@@ -8,6 +8,7 @@ import RecentTransactions from './components/RecentTransactions';
 import AddExpenseModal from './components/AddExpenseModal';
 import AuthModal from './components/AuthModal';
 import AIChat from './components/AIChat';
+import AISummaryModal from './components/AISummaryModal';
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -29,6 +30,21 @@ export default function App() {
     setBudget(newBudget);
     localStorage.setItem('monthlyBudget', newBudget);
     setTempBudget('');
+  };
+
+   
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [aiSummary, setAiSummary] = useState(null);
+
+  const handleAnalyse = (extracted) => {
+    setAiSummary(extracted);
+    setIsSummaryOpen(true);
+  };
+
+  const handleSaveExpense = () => {
+    // In real app: save to state/database
+    alert('Expense saved successfully!');
+    setIsSummaryOpen(false);
   };
 
   return (
@@ -65,8 +81,20 @@ export default function App() {
       </button>
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} darkMode={darkMode} />
-      <AddExpenseModal isOpen={isAddExpenseOpen} onClose={() => setIsAddExpenseOpen(false)} darkMode={darkMode} />
-            {/* AI Chat */}
+      <AddExpenseModal 
+        isOpen={isAddExpenseOpen} 
+        onClose={() => setIsAddExpenseOpen(false)} 
+        darkMode={darkMode}
+        onAnalyse={handleAnalyse}
+      />
+      <AISummaryModal 
+        isOpen={isSummaryOpen}
+        onClose={() => setIsSummaryOpen(false)}
+        darkMode={darkMode}
+        summary={aiSummary || {}}
+        onSave={handleSaveExpense}
+      />
+      {/* AI Chat */}
       <AIChat darkMode={darkMode} />
     </div>
   );

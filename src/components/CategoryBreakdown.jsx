@@ -21,7 +21,7 @@ export default function CategoryBreakdown({ darkMode }) {
           <Pie data={categories} cx="50%" cy="50%" innerRadius={70} outerRadius={110} dataKey="value" paddingAngle={5}>
             {categories.map((entry, i) => <Cell key={i} fill={entry.color} />)}
           </Pie>
-          <Tooltip contentStyle={{ backgroundColor: darkMode ? '#1f2937' : '#ffffff', border: 'none', borderRadius: '16px' }} />
+          <Tooltip contentStyle={{ backgroundColor: darkMode ? '#ffffff' : '#ffa', border: 'none', borderRadius: '16px' }} />
         </PieChart>
       </ResponsiveContainer>
 
