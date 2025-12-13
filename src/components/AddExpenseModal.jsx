@@ -189,7 +189,7 @@ const requestAIExtrctedRecieptImageDetails=async()=>{
             <label className="flex flex-col items-center justify-center w-full h-48 border-3 border-dashed border-purple-400/40 rounded-2xl cursor-pointer hover:bg-purple-50/50 dark:hover:bg-gray-800/40 transition group">
               <Upload className="w-14 h-14 text-purple-500 mb-3 group-hover:scale-110 transition" />
               <span className="text-purple-600 dark:text-purple-400 font-semibold text-lg">Upload bill photo</span>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              <input type="file" capture="environment" /*camera capturing*/ accept="image/*" onChange={handleImageUpload} className="hidden" />
             </label>
           ) : (
             <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-purple-300/50">
