@@ -1,4 +1,4 @@
-/* import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import StatsCards from './components/StatsCards';
 import BudgetCard from './components/BudgetCard';
@@ -9,14 +9,15 @@ import AddExpenseModal from './components/AddExpenseModal';
 import AuthModal from './components/AuthModal';
 import AIChat from './components/AIChat';
 import AISummaryModal from './components/AISummaryModal';
+import ErrorDisplay from './components/ErrorDisplay';
+import LoginModal from './components/LoginModal';
 
 
-export default function App() {
+export default function MainContent() {
   const [darkMode, setDarkMode] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
-  const[isUserLogged,setIsUserLogged] = useState(false)
-
+  
   // Budget Logic
   const [budget, setBudget] = useState(() => {
     const saved = localStorage.getItem('monthlyBudget');
@@ -52,6 +53,23 @@ export default function App() {
     setIsSummaryOpen(false);
   };
 
+  const [error, setError] = useState(null);
+
+  // Example trigger
+  const simulateError = () => {
+    setError({
+      title: "Network Error",
+      message: "Failed to connect to the server. Check your internet connection.",
+      retry: true,
+    });
+  };
+
+  const handleRetry = () => {
+    // Retry logic here
+    console.log("Retrying...");
+    setError(null); // or show loading
+  };
+
   return (
     
     <div className={`min-h-screen transition-all duration-500 ${darkMode ? 'bg-gray-950 text-white' : 'bg-gradient-to-br from-violet-50 via-pink-50 to-blue-50 text-gray-900'}`}>
@@ -59,7 +77,7 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto px-4 py-10">
         <div className="mb-12">
-          <h2 className="text-5xl font-black mb-3">
+          <h2 className="md:text-5xl text-4xl font-black mb-3">
             Welcome back, <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Tharusha</span>
           </h2>
           <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -85,12 +103,19 @@ export default function App() {
         +
       </button>
 
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} darkMode={darkMode} />
+      <AuthModal 
+      isOpen={isAuthOpen} 
+      onClose={() => setIsAuthOpen(false)} 
+      darkMode={darkMode} 
+      />
+      {/*login*/}
+      
       <AddExpenseModal 
         isOpen={isAddExpenseOpen} 
         onClose={() => setIsAddExpenseOpen(false)} 
         darkMode={darkMode}
         onAnalyse={handleAnalyse}
+        setError={setError}
       />
       <AISummaryModal 
         isOpen={isSummaryOpen}
@@ -99,48 +124,19 @@ export default function App() {
         summary={aiSummary || {}}
         onSave={handleSaveExpense}
       />
-      {/* AI Chat */
-   /*    <AIChat darkMode={darkMode} />
+      {/* AI Chat */}
+      <AIChat darkMode={darkMode} />
+      {/* Error Modal */}
+      {error && (
+        <ErrorDisplay
+          title={error.title}
+          message={error.message}
+          onRetry={error.retry ? handleRetry : null}
+          onClose={() => setError(null)}
+          darkMode={darkMode}
+          autoDismiss={!error.retry} // Auto close if no retry needed
+        />
+      )}
     </div>
   );
-}*/ 
-import React, { useEffect, useState } from 'react'
-import AuthModal from './components/AuthModal'
-import MainContent from './MainContent'
-import LoginModal from './components/LoginModal'
-import RegisterModal from './components/RegisterModal'
-import { BrowserRouter, Routes, Route, Link, Outlet, Router } from 'react-router-dom';
-
-const App = () => {
-
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(true);
-  const [isUserLogged, setIsUserLogged] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  //const[user,setUser]=useState(null)
-
-  useEffect(()=>{
-    const user = localStorage.getItem("user")
-    
-    if (user!==null) {
-      setIsUserLogged(true)
-    }
-  })
-
-  return (
-    
-      <BrowserRouter>
-        <Routes>
-          <Route path='/login' element={<LoginModal />} />
-          <Route path='/' element={<RegisterModal />}/>
-          {isUserLogged ? <Route path='/expenza-ai' element={<MainContent />} />
-            :
-          <Route path='/login' element={<LoginModal />} />}
-          
-        </Routes>
-      </BrowserRouter>
-  
-  )
 }
-
-export default App

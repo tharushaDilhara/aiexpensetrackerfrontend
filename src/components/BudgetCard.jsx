@@ -22,7 +22,7 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
         </div>
 
         <div className="flex-1 w-full max-w-md">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col md:flex-row items-center gap-3">
             <div className="relative flex-1">
               <span className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-bold text-gray-400">$</span>
               <input
@@ -39,7 +39,7 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
             </div>
             <button
               onClick={saveBudget}
-              className="px-8 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:scale-105 transition"
+              className="px-8 py-5 w-[80%] md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:scale-105 transition"
             >
               Save Budget
             </button>

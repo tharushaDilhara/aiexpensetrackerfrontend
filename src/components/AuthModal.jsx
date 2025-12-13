@@ -1,11 +1,59 @@
-import React, { useState } from 'react';
-import { X, Brain, Mail, Lock, User, Eye, EyeOff, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, Brain, Mail, Lock, User, Eye, EyeOff, Sparkles, Regex } from 'lucide-react';
 
-export default function AuthModal({ isOpen, onClose, darkMode }) {
+export default function AuthModal({ isOpen, onClose, darkMode,setIsUserLogged }) {
+  
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  
+  const[loginData,setloginData] = useState({
+    email:"",
+    password:""
+  })
+
+  const [register,setRegister]=useState({
+    fullname:"",
+    email:"",
+    password:""
+  })
+
+  const[errors,setErrors]=useState({
+    fullnameerror:"",
+    emailerror:"",
+    passworderror:""
+  })
 
   if (!isOpen) return null;
+
+  const confirmUserLogin=()=>{
+    setIsUserLogged(true)
+  }
+
+useEffect(()=>{
+
+},[isLogin])
+
+const handleOnchange=(e)=>{
+  switch (isLogin) {
+    case true:
+      setloginData({...loginData,[e.target.name]:e.target.value})
+      break;
+    case false:
+      setRegister({...loginData,[e.target.name]:e.target.value})
+      break;
+  
+    default:
+      break;
+  }
+}
+
+const handleLoginClick=(e)=>{
+  e.preventDefault()
+  console.log(loginData);
+  console.log(register);
+  
+  
+}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -16,12 +64,12 @@ export default function AuthModal({ isOpen, onClose, darkMode }) {
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700 p-10 animate-in zoom-in duration-300">
           
-          <button
+          {/* <button
             onClick={onClose}
             className="absolute top-6 right-6 p-2.5 rounded-xl bg-gray-200/50 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
           >
             <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          </button>
+          </button> */}
 
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 mb-6 shadow-2xl mx-auto">
@@ -42,8 +90,11 @@ export default function AuthModal({ isOpen, onClose, darkMode }) {
                 <input
                   type="text"
                   placeholder="Full Name"
+                  name='fullname'
+                  onChange={handleOnchange}
                   className={`w-full pl-12 pr-5 py-4 rounded-2xl border ${darkMode ? 'bg-gray-800/50 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-100/70 border-gray-300 text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition`}
                 />
+                
               </div>
             )}
 
@@ -51,9 +102,14 @@ export default function AuthModal({ isOpen, onClose, darkMode }) {
               <Mail className="absolute left-4 top-5 w-5 h-5 text-gray-400" />
               <input
                 type="email"
+                name="email"
                 placeholder="Email Address"
+                 onChange={handleOnchange}
                 className={`w-full pl-12 pr-5 py-4 rounded-2xl border ${darkMode ? 'bg-gray-800/50 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-100/70 border-gray-300 text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition`}
               />
+              {/* <span 
+              className={`${errors.emailerror ? 'text-red-500':'text-green-500 font-bold'}`}
+              >{errors.emailerror ? errors.emailerror : "Valid Email"}</span> */}
             </div>
 
             <div className="relative">
@@ -61,6 +117,8 @@ export default function AuthModal({ isOpen, onClose, darkMode }) {
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
+                onChange={handleOnchange}
+                name='password'
                 className={`w-full pl-12 pr-14 py-4 rounded-2xl border ${darkMode ? 'bg-gray-800/50 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-100/70 border-gray-300 text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition`}
               />
               <button
@@ -73,6 +131,7 @@ export default function AuthModal({ isOpen, onClose, darkMode }) {
             </div>
 
             <button
+              onClick={handleLoginClick}
               type="submit"
               className="w-full py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-2xl hover:scale-105 transition flex items-center justify-center gap-3"
             >

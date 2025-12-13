@@ -1,31 +1,147 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Sparkles, Upload, Image as ImageIcon } from 'lucide-react';
+import axios from "axios"
 
-export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse }) {
+
+export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse ,setError }) {
   const [receiptText, setReceiptText] = useState('');
   const [uploadedImage, setUploadedImage] = useState(null);
+  const[imageToAnalyseThroughAI,setImageToAnalyseThroughAI] = useState(null)
+  const[loading,setLoading]=useState(false);
+  
+  
 
   if (!isOpen) return null;
 
-  const handleImageUpload = (e) => {
+const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setUploadedImage(reader.result);
+      setImageToAnalyseThroughAI(file); //row file use to send through request body with the help of FormData 
+      reader.onloadend = () => {
+        setUploadedImage(reader.result)
+      };
+      
+      
       reader.readAsDataURL(file);
     }
-  };
+};
+
+
+
+
+  //text message analyse with AI
+const requestAIExtrctedRecieptTextDetail=async(receiptText)=>{
+
+  setLoading(true)
+  try {
+    axios.post("http://localhost:3000/api/v1/aigeneratedtext",{receiptText:receiptText})
+    .then((res)=>{
+        
+          setLoading(false)
+          const extracted = {
+            name:res.data.data.name,
+            amount:res.data.data.amount,
+            category:res.data.data.category,
+            date:res.data.data.date || new Date().toLocaleDateString(),
+            type:res.data.data.type,
+         }
+          console.log(res);
+
+          /* if (res.data.declinemessage!=="") {
+            setError({message:res.data.data.declinemessage})//set AI decline error
+          }
+           */
+         if (!loading) {
+            //onClose();
+            setReceiptText("")
+            onAnalyse(extracted); //passed to summery
+         }
+    })
+    .catch((error)=>{
+      console.log(error);
+      setError({message:error.message})//set error
+      setLoading(false) //stop loading
+      
+    })
+    
+  } catch (error) {
+    
+    setError({
+        title: "No Internet Connection",
+        message: "Can't reach the server. Check your network and try again.",
+        retry: true,
+        });//set error
+    setLoading(false) //stop loading
+  }
+}
+
+  //Analyse through an image
+  //row file send to end point if image is also added
+const requestAIExtrctedRecieptImageDetails=async()=>{
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('image',imageToAnalyseThroughAI)
+    try {
+      axios.post("http://localhost:3000/api/v1/aiextractedimage",formData)
+      .then(res=>{
+       
+        console.log(res.data.data)
+         setLoading(false)
+
+          const extracted = {
+            name:res.data.data.name,
+            amount:res.data.data.amount,
+            category:res.data.data.category,
+            date:res.data.data.date || new Date().toLocaleDateString(),
+            type:res.data.data.type,
+         }
+          
+         if (!loading) {
+            //setUploadedImage(null)
+            onAnalyse(extracted); //passed to summery
+         }
+        
+      })
+      .catch((error)=>{
+        console.log(error);
+        setError({message:error.response.data.message})//set error
+        setLoading(false) //stop loading
+      })
+    } catch (error) {
+      console.log(error);
+      setError({
+        title: "No Internet Connection",
+        message: "Can't reach the server. Check your network and try again.",
+        retry: true,
+        });//set error
+      setLoading(false) //stop loading
+    }
+}
 
   const handleAnalyse = () => {
-    // Simulate AI extraction
-    const extracted = {
-      title: receiptText.includes('Starbucks') ? 'Starbucks Coffee' : 'Grocery Store',
-      category: receiptText.includes('Uber') ? 'Transport' : 'Food',
-      amount: '48.50',
-      date: 'Dec 11, 2025 • 3:24 PM',
-    };
-    onAnalyse(extracted); // Pass to parent
-    onClose();
+    
+    //if both oprions are selected
+    if (receiptText!=="" && imageToAnalyseThroughAI) {
+    
+      // Critical error with retry
+      setError({
+        message: "You can only use one method to extract data at a time",
+        // no title, no retry → auto dismiss
+      });
+
+      setReceiptText("")
+      setUploadedImage(null)
+    }
+
+    if (receiptText!=="") {
+      requestAIExtrctedRecieptTextDetail(receiptText)
+    }
+
+    if (imageToAnalyseThroughAI) {
+        requestAIExtrctedRecieptImageDetails()
+    }
+    
   };
 
   return (
@@ -51,7 +167,11 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse }
           <textarea
             value={receiptText}
             onChange={(e) => setReceiptText(e.target.value)}
-            placeholder="Paste receipt text here..."
+            placeholder="Paste receipt text/SMS here or type like,
+                        Ex- 
+                        Shopping 
+                        Rs.5000 
+                        2025-**-** or (keep it empty)"
             rows={7}
             className={`w-full p-5 rounded-2xl border text-base resize-none focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition mb-6 ${
               darkMode ? 'bg-gray-800/60 border-gray-700 text-white' : 'bg-gray-100/70 border-gray-300 text-gray-900'
@@ -88,9 +208,10 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse }
                 !receiptText && !uploadedImage ? 'opacity-60 cursor-not-allowed' : ''
               }`}
             >
-              <Sparkles className="w-7 h-7" />
+              <Sparkles className={`w-7 h-7 ${loading ? 'animate-spin':'animate-none'} `} />
               Analyse with AI
             </button>
+            <span className='text-red-400 font-medium'>Note: </span><span className='text-gray-600 font-medium'>Use one method per action</span>
           </div>
         </div>
       </div>

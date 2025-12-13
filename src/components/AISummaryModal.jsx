@@ -4,7 +4,7 @@ import { X, Sparkles, Calendar, Tag, DollarSign } from 'lucide-react';
 export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onSave }) {
   if (!isOpen) return null;
 
-  const { title, category, amount, date } = summary;
+  const { name, category, amount, date,type } = summary;
 
   const categoryColors = {
     Food: '#8b5cf6',
@@ -46,7 +46,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
                 <Tag className="w-4 h-4" />
                 Transaction Title
               </div>
-              <p className="text-2xl font-bold">{title || 'Unknown Merchant'}</p>
+              <p className="text-2xl font-bold">{name || 'Unknown Merchant'}</p>
             </div>
 
             {/* Category */}
@@ -79,6 +79,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
                   Date & Time
                 </div>
                 <p className="text-lg font-medium">{date || 'Today'}</p>
+                <p className="text-lg font-medium">{type}</p>
               </div>
             </div>
           </div>
