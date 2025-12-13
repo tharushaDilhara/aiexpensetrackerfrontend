@@ -87,14 +87,14 @@ export default function AIChat({ darkMode }) {
 
         {/* Input */}
         <div className="p-6 border-t border-gray-200/50 dark:border-gray-700">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
               placeholder="Ask about your finances..."
-              className={`flex-1 px-5 py-4 rounded-2xl border focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition ${
+              className={`flex-1 md:w-auto w-[70%] px-5 py-4 rounded-2xl border focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition ${
                 darkMode ? 'bg-gray-800/70 border-gray-700 text-white placeholder-gray-500' : 'bg-gray-100/70 border-gray-300 text-gray-900 placeholder-gray-500'
               }`}
             />
