@@ -38,7 +38,7 @@ export default function AIChat({ darkMode }) {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 w-96 h-[600px] z-50">
+    <div className="fixed bottom-8 right-8 md:w-96 w-[300px] h-[600px] z-50">
       <div className={`h-full rounded-3xl shadow-2xl backdrop-blur-2xl border flex flex-col ${darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-200'}`}>
         {/* Header */}
         <div className="p-6 border-b border-gray-200/50 dark:border-gray-700 flex items-center justify-between">
