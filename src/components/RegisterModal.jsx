@@ -54,7 +54,7 @@ export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUse
   };
 
   return (
-    <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
+    <div className="fixed max-h-screen inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700 p-10 animate-in zoom-in duration-300">
 
