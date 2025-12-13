@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Sparkles, Upload, Image as ImageIcon } from 'lucide-react';
+import { X, Sparkles, Upload, Image as ImageIcon, CameraIcon } from 'lucide-react';
 import axios from "axios"
 
 
@@ -190,7 +190,10 @@ const requestAIExtrctedRecieptImageDetails=async()=>{
               <Upload className="w-14 h-14 text-purple-500 mb-3 group-hover:scale-110 transition" />
               <span className="text-purple-600 dark:text-purple-400 font-semibold text-lg">Upload bill photo</span>
               <input type="file" capture="environment" /*camera capturing*/ accept="image/*" onChange={handleImageUpload} className="hidden" />
+              <input type="file"  /*camera capturing*/ accept="image/*" onChange={handleImageUpload} className="hidden" />
+              
             </label>
+            
           ) : (
             <div className="relative rounded-2xl overflow-hidden shadow-xl border-2 border-purple-300/50">
               <img src={uploadedImage} alt="Receipt" className="w-full h-auto max-h-80 object-contain" />
