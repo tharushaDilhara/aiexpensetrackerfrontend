@@ -54,16 +54,16 @@ export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUse
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
+    <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
       <div className="relative w-full max-w-md mx-4">
         <div className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700 p-10 animate-in zoom-in duration-300">
 
-          <button
+          {/* <button
             onClick={onClose}
             className="absolute top-6 right-6 p-2.5 rounded-xl bg-gray-200/60 dark:bg-gray-800/60 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
           >
             <X className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-          </button>
+          </button> */}
 
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 mb-6 shadow-xl mx-auto">
