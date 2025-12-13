@@ -13,7 +13,7 @@ export default function LoginModal({ isOpen=true, onClose, darkMode, setIsUserLo
     e.preventDefault();
     // Add your login logic here (API call, validation, etc.)
    // setIsUserLogged(true);
-   const checkExisting = JSON.parse(localStorage.getItem("user"))
+  /*  const checkExisting = JSON.parse(localStorage.getItem("user")) */
 
    
    //email: "asd@gmail.com"

@@ -115,18 +115,11 @@ const App = () => {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(true);
-  const [isUserLogged, setIsUserLogged] = useState(false);
+  const [isUserLogged, setIsUserLogged] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   //const[user,setUser]=useState(null)
 
-  useEffect(()=>{
-    const user = localStorage.getItem("user")
-    
-    if (user!==null) {
-      setIsUserLogged(true)
-    }
-  })
-
+  
   return (
     
       <BrowserRouter>
