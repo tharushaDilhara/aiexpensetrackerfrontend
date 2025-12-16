@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Sparkles, Calendar, Tag, DollarSign } from 'lucide-react';
+import axios from 'axios';
 
 export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onSave }) {
   if (!isOpen) return null;
 
   const { name, category, amount, date,type } = summary;
+  const[transaction,setTransaction] = useState(
+    {
+      name:summary.name ,
+     category:summary.category,
+     amount:summary.amount,
+     date:new Date(summary.date) || new Date(),
+     type:summary.type.toLowerCase()
+    })
 
+  
   const categoryColors = {
     Food: '#8b5cf6',
     Transport: '#3b82f6',
@@ -13,6 +23,31 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
     Entertainment: '#f59e0b',
     Bills: '#ef4444',
   };
+
+  const saveTransaction=async()=>{
+    const userToken = localStorage.getItem("token")
+    try {
+      
+          axios.post("http://localhost:3000/api/v1/saveexpense",
+            transaction,{
+            headers:{
+              Authorization:`Bearer ${userToken}`}
+          })
+          .then((res)=>{
+            console.log(res.data);
+            console.log("success");
+            onSave()
+            
+          })
+          .catch((error)=>{
+            console.log(error);
+            
+          })
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
@@ -68,6 +103,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
                   Amount
                 </div>
                 <p className="text-3xl font-black text-red-500">${amount || '0.00'}</p>
+                
               </div>
             </div>
 
@@ -93,7 +129,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
               Cancel
             </button>
             <button
-              onClick={onSave}
+              onClick={saveTransaction}
               className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition flex items-center justify-center gap-3"
             >
               <Sparkles className="w-5 h-5" />

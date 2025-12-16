@@ -109,26 +109,49 @@ import AuthModal from './components/AuthModal'
 import MainContent from './MainContent'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
-import { BrowserRouter, Routes, Route, Link, Outlet, Router } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Outlet, Router, Navigate, useNavigate } from 'react-router-dom';
 
 const App = () => {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(true);
-  const [isUserLogged, setIsUserLogged] = useState(true);
+  const [isUserLogged, setIsUserLogged] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  //const navigate = useNavigate()
   //const[user,setUser]=useState(null)
 
+
+  const checkIsUserIsLogged=()=>{
+    const user = localStorage.getItem("user")
+    const validtoken = localStorage.getItem("token")
+
+    if (!user) {
+      setIsUserLogged(false)
+    }
+
+    if (user && validtoken) {
+      setIsUserLogged(true)
+      console.log(user,validtoken);
+      
+    }
+
+  }
+  useEffect(()=>{
+    checkIsUserIsLogged()
+  })
+  
   
   return (
     
       <BrowserRouter>
         <Routes>
-          <Route path='/login' element={<LoginModal />} />
-          <Route path='/' element={<RegisterModal />}/>
-          {isUserLogged ? <Route path='/expenza-ai' element={<MainContent />} />
+          <Route path='/'   element={<Navigate to="/login" replace />} />
+          <Route path='/login'   element={<LoginModal />} />
+          <Route path='/register' element={<RegisterModal />}/>
+          {isUserLogged ? <Route path='/expenzaai' element={<MainContent />} />
             :
-          <Route path='/login' element={<LoginModal />} />}
+          <Route path='/login' element={<LoginModal />} />
+          }
           
         </Routes>
       </BrowserRouter>

@@ -11,31 +11,79 @@ import AIChat from './components/AIChat';
 import AISummaryModal from './components/AISummaryModal';
 import ErrorDisplay from './components/ErrorDisplay';
 import LoginModal from './components/LoginModal';
+import axios from 'axios';
 
 
 export default function MainContent() {
   const [darkMode, setDarkMode] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
+  const[loggedUserName,setLoggedUserName] = useState(JSON.parse(localStorage.getItem("user")).fullname.split(" ")[0])
+
+  console.log(loggedUserName);
   
   // Budget Logic
-  const [budget, setBudget] = useState(() => {
-    const saved = localStorage.getItem('monthlyBudget');
-    return saved ? parseInt(saved) : 0;
-  });
+  const [budget, setBudget] = useState(0);
 
   
 
   const [tempBudget, setTempBudget] = useState('');
-  const totalSpent = 4238;
-  const remaining = budget - totalSpent;
+  const totalSpent = 4238;//change here with Real data
+  const remaining = budget;
 
-  const saveBudget = () => {
-    if (!tempBudget || tempBudget <= 0) return;
-    const newBudget = parseInt(tempBudget);
-    setBudget(newBudget);
-    localStorage.setItem('monthlyBudget', newBudget);
-    setTempBudget('');
+  //load current budget
+  useEffect(()=>{
+    axios.get("http://localhost:3000/api/v1/getcurrentbudget",{
+      headers:{
+        Authorization:`Bearer ${localStorage.getItem("token")}`
+      }
+    })
+    .then((res)=>{
+      
+      if (!res.data) {
+        console.log(res.data.userBudget.currentBudget);
+        //localStorage.setItem('monthlyBudget', res.data.userBudget.currentBudget);
+        setBudget(res.data.userBudget.currentBudget);
+      }
+      setBudget(res.data.userBudget.currentBudget);
+      
+      
+    }).catch((error)=>{
+      console.log(error);
+      
+    })
+  },[budget])
+
+  
+
+  //POST budget saving
+  const saveBudget = async() => {
+
+      try {
+        
+        if (!tempBudget || tempBudget <= 0) return;
+          const newBudget = parseInt(tempBudget);
+         
+        axios.post('http://localhost:3000/api/v1/savebudget',{currentBudget:newBudget},{
+          headers:{
+            Authorization:`Bearer ${localStorage.getItem("token")}`
+          }
+        })
+        .then((res)=>{
+          setBudget(newBudget);
+          //localStorage.setItem('monthlyBudget', newBudget);
+          setTempBudget('');
+          console.log(res.data);
+          
+        }).catch((error)=>{
+          console.log(error);
+          
+        })
+      } catch (error) {
+        console.log(error.message);
+      }
+
+    
   };
 
    
@@ -78,7 +126,7 @@ export default function MainContent() {
       <main className="max-w-7xl mx-auto px-4 py-10">
         <div className="mb-12">
           <h2 className="md:text-5xl text-4xl font-black mb-3">
-            Welcome back, <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Tharusha</span>
+            Welcome back, <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{loggedUserName}</span>
           </h2>
           <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             Let AI track and optimize your spending

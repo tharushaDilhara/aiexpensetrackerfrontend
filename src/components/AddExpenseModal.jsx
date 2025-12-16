@@ -70,14 +70,18 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
       const res = await axios.post("http://localhost:3000/api/v1/aiextractedimage", formData);
       setLoading(false);
 
+      const amountSize = parseFloat(res.data.data.amount,2)
+
       const extracted = {
         name: res.data.data.name,
-        amount: res.data.data.amount,
+        amount: amountSize,
         category: res.data.data.category,
         date: res.data.data.date || new Date().toLocaleDateString(),
         type: res.data.data.type,
       };
-
+      console.log(extracted);
+      setUploadedImage(null)
+      setImageToAnalyseThroughAI(null)
       onAnalyse(extracted);
     } catch (error) {
       setError({ message: error.response?.data?.message || "Analysis failed" });
@@ -147,6 +151,7 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
               >
                 <Camera className="w-14 h-14 text-purple-500 mb-3 group-hover:scale-110 transition" />
                 <span className="text-purple-600 dark:text-purple-400 font-semibold text-lg">Take Photo</span>
+                <span className='text-green-400 font-bold text-[14px]'>(Image must be clear)</span>
               </button>
 
               {/* Upload from Gallery */}
@@ -182,7 +187,7 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
             ref={cameraInputRef}
             type="file"
             accept="image/*"
-            capture="environment"  
+            capture="user" 
             onChange={handleImageUpload}
             className="hidden"
           />

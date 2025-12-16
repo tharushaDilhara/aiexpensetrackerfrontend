@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Brain, Mail, Lock, User, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios"
 
 export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUserLogged }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,11 +18,12 @@ export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUse
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const targetElement = e.target
     let error = "";
 
     switch (name) {
       case "email":
-        error = emailPattern.test(value) ? "" : "Email must include '@' and end with '.com'";
+        error = emailPattern.test(value) ? "" : "Email must include '@' and end with '.com'" ;
         break;
       case "password":
         error = passwordPattern.test(value) ? "" : "Password must be 6-8 characters with letters, numbers, or symbols";
@@ -48,10 +50,27 @@ export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUse
 
     // API call would go here
     console.log("Registering:", register);
+
+    try {
+      axios.post("http://localhost:3000/api/v1/auth/register",register)
+      .then((res)=>{
+        console.log(res.data);
+        navigate("/login")
+      })
+      .catch((errors)=>{
+        console.log(errors);
+        
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
     
-    setIsUserLogged(true);
-    onClose();
+    //setIsUserLogged(true);
+    //onClose();
   };
+  //password-Dana@34
+  //dananjaya@gmail.com
 
   return (
     <div className="fixed overflow-auto inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">

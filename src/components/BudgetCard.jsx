@@ -1,20 +1,20 @@
 import React from 'react';
-
+ 
 export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget, saveBudget, totalSpent, remaining }) {
   return (
     <div className={`rounded-3xl p-8 shadow-2xl backdrop-blur-xl border  ${darkMode ? 'bg-gray-800/70 border-gray-700' : 'bg-white/90 border-white/60'} mb-12`}>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Monthly Budget
+          Monthly Started Budget
         </h3>
         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Set your spending limit</span>
       </div>
-
+ 
       <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="text-center sm:text-left">
           <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Your budget</p>
           <p className="text-5xl font-black mt-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            ${budget.toLocaleString()}
+            Rs.{budget.toLocaleString()}
           </p>
           <p className={`text-sm mt-3 ${budget > 0 ? 'text-green-500' : 'text-gray-500'}`}>
             {budget > 0 ? 'Active' : 'Not set yet'}
@@ -28,6 +28,7 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
               <input
                 type="number"
                 value={tempBudget}
+                disabled= {budget ? true:false}
                 onChange={(e) => setTempBudget(e.target.value)}
                 placeholder="5000"
                 className={`w-full pl-12 pr-5 py-5 text-2xl font-bold rounded-2xl border-2 focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition ${

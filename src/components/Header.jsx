@@ -1,7 +1,18 @@
 import React from 'react';
 import { Moon, Sun, Brain } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header({ darkMode, toggleDarkMode, openAuth }) {
+  
+  const navigate = useNavigate()
+
+  const loggoutUser = ()=>{
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    
+    navigate("/login")
+  }
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur-2xl bg-white/70 dark:bg-gray-950/80 border-b border-gray-200/30 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
@@ -24,10 +35,10 @@ export default function Header({ darkMode, toggleDarkMode, openAuth }) {
           </button>
 
           <button
-            onClick={openAuth}
+            onClick={loggoutUser}
             className="px-7 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition"
           >
-            Sign In
+            Logout
           </button>
         </div>
       </div>

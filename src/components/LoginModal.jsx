@@ -1,24 +1,102 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Brain, Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function LoginModal({ isOpen=true, onClose, darkMode, setIsUserLogged }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const[uservalidatity,setUservalidity]=useState(false)
-  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({ 
+                                            email: "", 
+                                            password: "" 
+                                          });
+const[uservalidatity,setUservalidity]=useState(false)
+const[loading,setLoading]=useState(true)
+
+const navigate = useNavigate();
+
   if (!isOpen) return null;
 
-  const handleLogin = (e) => {
+  
+
+  const handleLogin = async(e) => {
     e.preventDefault();
     // Add your login logic here (API call, validation, etc.)
    // setIsUserLogged(true);
   /*  const checkExisting = JSON.parse(localStorage.getItem("user")) */
-
+    
+    /* console.log(loginData);
+    try {
+      axios.post("http://localhost:3000/api/v1/auth/login",loginData)
+      .then((res)=>{
+        console.log(res);
+        if (res.statusText!=="OK") {
+          return;
+        }
+        axios.interceptors.request.use((req)=>{
+          
+        })
+        const usertoken = res.data.token 
+        localStorage.set("token",usertoken)
+        
+      })
+      .catch((error)=>{
+        console.log(error);
+        
+      })
+    } catch (error) {
+      console.log(error);
+    } */
+    
    
    //email: "asd@gmail.com"
    //password: "Asd@333"
-   navigate("/expenza-ai")
+   try {
+      const response = await axios.post("http://localhost:3000/api/v1/auth/login", loginData);
+
+      // Success: 200 or 201
+      if (response.status === 200 || response.status === 201) {
+        const { token, user } = response.data; // Adjust based on your backend response
+
+        // Save token securely
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user)); // Optional: save user info
+
+        // Optional: Set Axios default header for future requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        // Navigate to dashboard
+        navigate("/expenzaai"); // or "/" depending on your route
+      }
+    } catch (error) {
+      console.error("Login failed:", error.response.data.message);
+      
+      alert( error.response.data.message)
+
+      let errorMessage = "An unexpected error occurred. Please try again.";
+
+      if (error.response) {
+        // Server responded with error status
+        if (error.response.status === 401) {
+          errorMessage = "Invalid email or password.";
+        } else if (error.response.status === 400) {
+          errorMessage = error.response.data.message || "Invalid input. Please check your details.";
+        } else {
+          errorMessage = error.response.data.message || errorMessage;
+        }
+      } else if (error.request) {
+        // Network error
+        errorMessage = "No internet connection or server is down.";
+      }
+
+      // Show error via your ErrorDisplay component
+      setError?.({
+        title: "Login Failed",
+        message: errorMessage,
+        retry: true,
+      });
+    } finally {
+      setLoading(false);
+    }
    
   };
 
@@ -90,7 +168,9 @@ export default function LoginModal({ isOpen=true, onClose, darkMode, setIsUserLo
 
           <p className={`text-center mt-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             Don't have an account?{' '}
-            <button className="font-bold text-purple-500 hover:text-purple-600 transition">
+            <button 
+            onClick={()=>navigate("/register")}
+            className="font-bold text-purple-500 hover:text-purple-600 transition">
               Sign up free
             </button>
           </p>
