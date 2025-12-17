@@ -12,7 +12,7 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
  
       <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="text-center sm:text-left">
-          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Your budget</p>
+          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Your Started budget</p>
           <p className="text-5xl font-black mt-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Rs.{budget.toLocaleString()}
           </p>
@@ -46,9 +46,9 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
             </button>
           </div>
           <p className={`text-sm mt-4 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-            You have spent <strong>${totalSpent.toLocaleString()}</strong> •{' '}
+            You have spent <strong>Rs.{totalSpent.toLocaleString()}</strong> •{' '}
             <strong className={remaining >= 0 ? 'text-green-500' : 'text-red-500'}>
-              ${Math.abs(remaining).toLocaleString()} {remaining >= 0 ? 'left' : 'over'}
+              Rs.{Math.abs(remaining).toLocaleString()} {remaining >= 0 ? 'left' : 'over'}
             </strong>
           </p>
         </div>

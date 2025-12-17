@@ -13,80 +13,86 @@ import ErrorDisplay from './components/ErrorDisplay';
 import LoginModal from './components/LoginModal';
 import axios from 'axios';
 
-
 export default function MainContent() {
-  const [darkMode, setDarkMode] = useState(false);
+  // Load dark mode from localStorage on initial render, default to false
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? JSON.parse(saved) : false;
+  });
+
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
-  const[loggedUserName,setLoggedUserName] = useState(JSON.parse(localStorage.getItem("user")).fullname.split(" ")[0])
+  const [loggedUserName, setLoggedUserName] = useState(
+    JSON.parse(localStorage.getItem("user")).fullname.split(" ")[0]
+  );
 
   console.log(loggedUserName);
   
   // Budget Logic
   const [budget, setBudget] = useState(0);
-
-  
-
   const [tempBudget, setTempBudget] = useState('');
-  const totalSpent = 4238;//change here with Real data
-  const remaining = budget;
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [remaining, setRemaining] = useState(0);
 
-  //load current budget
-  useEffect(()=>{
-    axios.get("http://localhost:3000/api/v1/getcurrentbudget",{
-      headers:{
-        Authorization:`Bearer ${localStorage.getItem("token")}`
+  // Load current budget
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/v1/getcurrentbudget", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
-    .then((res)=>{
-      
-      if (!res.data) {
-        console.log(res.data.userBudget.currentBudget);
-        //localStorage.setItem('monthlyBudget', res.data.userBudget.currentBudget);
-        setBudget(res.data.userBudget.currentBudget);
-      }
+    .then((res) => {
       setBudget(res.data.userBudget.currentBudget);
-      
-      
-    }).catch((error)=>{
-      console.log(error);
-      
+      setTotalSpent(res.data.userBudget.totalexpensed);
+      setRemaining(res.data.userBudget.avialblebudget);
     })
-  },[budget])
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []); // Removed [budget] dependency to prevent infinite loop
 
-  
+  // Save budget
+  const saveBudget = async () => {
+    try {
+      if (!tempBudget || tempBudget <= 0) return;
+      const newBudget = parseFloat(tempBudget);
 
-  //POST budget saving
-  const saveBudget = async() => {
-
-      try {
-        
-        if (!tempBudget || tempBudget <= 0) return;
-          const newBudget = parseInt(tempBudget);
-         
-        axios.post('http://localhost:3000/api/v1/savebudget',{currentBudget:newBudget},{
-          headers:{
-            Authorization:`Bearer ${localStorage.getItem("token")}`
-          }
-        })
-        .then((res)=>{
-          setBudget(newBudget);
-          //localStorage.setItem('monthlyBudget', newBudget);
-          setTempBudget('');
-          console.log(res.data);
-          
-        }).catch((error)=>{
-          console.log(error);
-          
-        })
-      } catch (error) {
-        console.log(error.message);
-      }
-
-    
+      axios.post('http://localhost:3000/api/v1/savebudget', { currentBudget: newBudget }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      .then((res) => {
+        setBudget(newBudget);
+        setTempBudget('');
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
-   
+  // Toggle dark mode and save to localStorage
+  const toggleDarkMode = () => {
+    setDarkMode(prev => {
+      const newMode = !prev;
+      localStorage.setItem('darkMode', JSON.stringify(newMode));
+      return newMode;
+    });
+  };
+
+  // Optional: Apply dark mode class to document root (recommended for tailwind dark mode)
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const [aiSummary, setAiSummary] = useState(null);
 
@@ -96,14 +102,12 @@ export default function MainContent() {
   };
 
   const handleSaveExpense = () => {
-    // In real app: save to state/database
     alert('Expense saved successfully!');
     setIsSummaryOpen(false);
   };
 
   const [error, setError] = useState(null);
 
-  // Example trigger
   const simulateError = () => {
     setError({
       title: "Network Error",
@@ -113,15 +117,17 @@ export default function MainContent() {
   };
 
   const handleRetry = () => {
-    // Retry logic here
     console.log("Retrying...");
-    setError(null); // or show loading
+    setError(null);
   };
 
   return (
-    
     <div className={`min-h-screen transition-all duration-500 ${darkMode ? 'bg-gray-950 text-white' : 'bg-gradient-to-br from-violet-50 via-pink-50 to-blue-50 text-gray-900'}`}>
-      <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode) } openAuth={() => setIsAuthOpen(true)} />
+      <Header 
+        darkMode={darkMode} 
+        toggleDarkMode={toggleDarkMode} 
+        openAuth={() => setIsAuthOpen(true)} 
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-10">
         <div className="mb-12">
@@ -134,7 +140,15 @@ export default function MainContent() {
         </div>
 
         <StatsCards darkMode={darkMode} remaining={remaining} />
-        <BudgetCard darkMode={darkMode} budget={budget} tempBudget={tempBudget} setTempBudget={setTempBudget} saveBudget={saveBudget} totalSpent={totalSpent} remaining={remaining} />
+        <BudgetCard 
+          darkMode={darkMode} 
+          budget={budget} 
+          tempBudget={tempBudget} 
+          setTempBudget={setTempBudget} 
+          saveBudget={saveBudget} 
+          totalSpent={totalSpent} 
+          remaining={remaining} 
+        />
 
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           <WeeklyTrendChart darkMode={darkMode} />
@@ -152,11 +166,10 @@ export default function MainContent() {
       </button>
 
       <AuthModal 
-      isOpen={isAuthOpen} 
-      onClose={() => setIsAuthOpen(false)} 
-      darkMode={darkMode} 
+        isOpen={isAuthOpen} 
+        onClose={() => setIsAuthOpen(false)} 
+        darkMode={darkMode} 
       />
-      {/*login*/}
       
       <AddExpenseModal 
         isOpen={isAddExpenseOpen} 
@@ -172,9 +185,9 @@ export default function MainContent() {
         summary={aiSummary || {}}
         onSave={handleSaveExpense}
       />
-      {/* AI Chat */}
+      
       <AIChat darkMode={darkMode} />
-      {/* Error Modal */}
+      
       {error && (
         <ErrorDisplay
           title={error.title}
@@ -182,7 +195,7 @@ export default function MainContent() {
           onRetry={error.retry ? handleRetry : null}
           onClose={() => setError(null)}
           darkMode={darkMode}
-          autoDismiss={!error.retry} // Auto close if no retry needed
+          autoDismiss={!error.retry}
         />
       )}
     </div>

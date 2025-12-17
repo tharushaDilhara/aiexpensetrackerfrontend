@@ -128,7 +128,8 @@ export default function CategoryBreakdown({ darkMode }) {
           <Tooltip
             formatter={(value) => `${Number(value).toFixed(1)}%`}
             contentStyle={{
-              backgroundColor: darkMode ? '#1f2937' : '#ffffff',
+              color:darkMode ? '#aaa' : '#aaa ',
+              backgroundColor: darkMode ? '#aaa' : '#ffffff',
               border: 'none',
               borderRadius: '12px',
               boxShadow: '0 10px 25px rgba(0,0,0,0.1)',

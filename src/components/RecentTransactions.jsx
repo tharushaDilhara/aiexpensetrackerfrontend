@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { format, startOfDay, endOfDay, subDays, parseISO } from 'date-fns';
 import axios from 'axios';
+import { Delete, Trash } from 'lucide-react';
 
 // Category → emoji + gradient color
 const categoryConfig = {
@@ -50,7 +51,7 @@ export default function RecentTransactions({ darkMode = false }) {
         // Assuming backend returns: { success: true, data: [...] }
         const data = res.data.data || res.data; // adjust if needed
         setTransactions(data);
-        console.log(data);
+        
         
         setError(null);
       } catch (err) {
@@ -62,7 +63,7 @@ export default function RecentTransactions({ darkMode = false }) {
     };
 
     fetchTransactions();
-  }, []);
+  },[]);
 
   // Filter + Sort logic
   const filteredTransactions = useMemo(() => {
@@ -134,6 +135,35 @@ export default function RecentTransactions({ darkMode = false }) {
         {error}
       </div>
     );
+  }
+
+  const deleteTransaction=async(tid)=>{
+
+    const confirmBox = window.confirm("Do you Confirm the transaction deletion ?")
+
+    if (confirmBox) {
+      try {
+        axios.delete(`http://localhost:3000/api/v1/delete/${tid}`,{
+          headers:{
+            Authorization:`Bearer ${localStorage.getItem("token")}`
+          }
+        })
+        .then((res)=>{
+          console.log(res.data);
+          window.location.reload()
+        }).catch((error)=>{
+          console.log(error);
+          
+        })
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }else{
+      alert("Transaction Deletion Canceled")
+    }
+
+    
   }
 
   return (
@@ -223,7 +253,9 @@ export default function RecentTransactions({ darkMode = false }) {
                   </div>
                   <div>
                     <p className={`font-bold text-lg ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
-                      {tx.name}
+                      {tx.name.length > 15 ? <p>{tx.name.substring(0,14)}- <br></br>{tx.name.substring(14,tx.name.length)}</p>
+                      
+                      :tx.name}
                     </p>
                     <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       {tx.category} • {formatDateLabel(tx.date)}
@@ -234,6 +266,17 @@ export default function RecentTransactions({ darkMode = false }) {
                 <p className={`text-2xl font-black ${isIncome ? 'text-green-500' : 'text-red-500'}`}>
                   {isIncome ? '+' : '−'}Rs. {Math.abs(tx.amount).toLocaleString('en-US')}
                 </p>
+                <button
+                onClick={()=>deleteTransaction(tx._id)}
+                  className="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 
+                            bg-red-600 hover:bg-red-700 active:bg-red-800 
+                            text-white shadow-sm hover:shadow 
+                            dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700
+                            focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 
+                            dark:focus:ring-offset-gray-900"
+                >
+                  <Trash />
+                </button>
               </div>
             );
           })

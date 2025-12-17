@@ -37,7 +37,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
             console.log(res.data);
             console.log("success");
             onSave()
-            
+            window.location.reload()
           })
           .catch((error)=>{
             console.log(error);

@@ -127,7 +127,10 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
           <textarea
             value={receiptText}
             onChange={(e) => setReceiptText(e.target.value)}
-            placeholder="Paste receipt text/SMS here..."
+            placeholder="Paste receipt text/SMS here...
+            text Ex: 
+            I paid Rs.1500 for class fees
+            Vehicle rental payment received Rs.50000"
             rows={7}
             className={`w-full p-5 rounded-2xl border text-base resize-none focus:outline-none focus:ring-4 focus:ring-purple-500/30 transition mb-6 ${
               darkMode ? 'bg-gray-800/60 border-gray-700 text-white' : 'bg-gray-100/70 border-gray-300 text-gray-900'

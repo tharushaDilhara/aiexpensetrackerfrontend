@@ -42,28 +42,23 @@ export default function StatsCards({ darkMode, remaining }) {
       //console.log(res.data);
       if (res.data && res.data.userBudget) {
        // const {totalTransactions,totalexpensed,totalincomes,avialblebudget} = res.data.userBudget
-        const {totalTransactions,totalexpensed,totalincomes,avialblebudget} = res.data.userBudget
+        const {totalTransactions,totalexpensed,totalincomes,avialblebudget,currentBudget} = res.data.userBudget
         let per = (totalexpensed/(totalincomes+avialblebudget))*100
         console.log(per.toFixed(2));
         
         const updatedList = [
-          {label:"Total Spent",value:`Rs.${totalexpensed.toLocaleString('en-US')}`,Change:`${((totalexpensed/(totalincomes+avialblebudget))*100).toFixed(2)}%`},
+          {label:"Total Spent",value:`Rs.${totalexpensed.toLocaleString('en-US')}`,Change:`${((totalexpensed/currentBudget)*100).toFixed(2)}%`},
           {label:"Total Earned",value:`Rs.${totalincomes.toLocaleString('en-US')}`,Change:`${((totalincomes/(totalincomes+avialblebudget))*100).toFixed(2)}%`},
-          {label:"Budget Left",value:`Rs.${avialblebudget.toLocaleString('en-US')}`,Change:`${((totalincomes/(totalincomes+avialblebudget))*100).toFixed(2)}%`},
+          {label:"Budget Left",value:`Rs.${avialblebudget.toLocaleString('en-US')}`,Change:`${((avialblebudget/(currentBudget))*100).toFixed(2)}%`},
           {label:"Transactions",value:totalTransactions.toLocaleString('en-US'),Change:"+5%"}
         ]
 
         //setcheckIsbudgetAvailable(avialblebudget)
         //console.log(checkIsbudgetAvailable);
-        
-
         setStatsList(updatedList)
-        console.log(updatedList);
-        
+      //console.log(res.data.userBudget);
+      
       }
-      
-      
-      
         
     }).catch((error)=>{
       console.log(error);

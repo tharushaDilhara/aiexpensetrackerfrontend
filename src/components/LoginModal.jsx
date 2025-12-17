@@ -50,6 +50,10 @@ const navigate = useNavigate();
    
    //email: "asd@gmail.com"
    //password: "Asd@333"
+
+   //new acc for testing =>john@gmail.com
+                            //John@Qw
+
    try {
       const response = await axios.post("http://localhost:3000/api/v1/auth/login", loginData);
 
