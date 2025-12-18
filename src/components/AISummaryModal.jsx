@@ -37,7 +37,7 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
             console.log(res);
             console.log("success");
             onSave()
-            //window.location.reload()
+            window.location.reload()
           })
           .catch((error)=>{
             console.log(error);
@@ -50,8 +50,8 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
-      <div className="relative w-full max-w-md">
+    <div className="fixed inset-0 z-50 overflow-auto flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
+      <div className="relative h-screen w-full max-w-md ">
         <div className={`rounded-3xl p-8 shadow-2xl backdrop-blur-2xl border ${darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-200'} animate-in zoom-in duration-300`}>
           
           <button
@@ -99,10 +99,10 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  <DollarSign className="w-4 h-4" />
+                  <span className="text-[18px] font-bold">Rs.</span>
                   Amount
                 </div>
-                <p className="text-3xl font-black text-red-500">${amount || '0.00'}</p>
+                <p className="text-3xl font-black text-red-500">Rs.{amount || '0.00'}</p>
                 
               </div>
             </div>

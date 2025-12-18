@@ -89,7 +89,7 @@ export default function RegisterModal({ isOpen=true, onClose, darkMode, setIsUse
               <Brain className="w-12 h-12 text-white" />
             </div>
             <h2 className="text-4xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Join ExpenseAI
+              Join Expenza AI
             </h2>
             <p className={`mt-4 text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Start tracking smarter with AI

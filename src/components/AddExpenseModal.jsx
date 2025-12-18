@@ -46,17 +46,17 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
       
       if (res.statusText==="OK") {
         setLoading(false);
-
+        const amountToRe = parseFloat(res.data.data.amount,2)
         const extracted = {
           name: res.data.data.name,
-          amount: res.data.data.amount,
+          amount: amountToRe,
           category: res.data.data.category,
           date: res.data.data.date || new Date().toLocaleDateString(),
           type: res.data.data.type,
         };
         console.log(res.data.data);
         setReceiptText("");
-        onAnalyse(res.data.data);
+        onAnalyse(extracted);
 
         return;
       }
