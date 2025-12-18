@@ -19,7 +19,7 @@ export default function StatsCards({ darkMode, remaining }) {
           {label:"Total Spent",value:`Rs.0`,Change:"+5%"},
           {label:"Total Earned",value:`Rs.0`,Change:"+5%"},
           {label:"Budget Left",value:`Rs.${0}`,Change:"+5%"},
-          {label:"Transactions",value:0,Change:"+5%"}
+          {label:"Transactions",value:0,Change:"100%"}
         ])
   const[statsLayout,setStatLayout] =useState({
     label:"",
@@ -50,7 +50,7 @@ export default function StatsCards({ darkMode, remaining }) {
           {label:"Total Spent",value:`Rs.${totalexpensed.toLocaleString('en-US')}`,Change:`${((totalexpensed/currentBudget)*100).toFixed(2)}%`},
           {label:"Total Earned",value:`Rs.${totalincomes.toLocaleString('en-US')}`,Change:`${((totalincomes/(totalincomes+avialblebudget))*100).toFixed(2)}%`},
           {label:"Budget Left",value:`Rs.${avialblebudget.toLocaleString('en-US')}`,Change:`${((avialblebudget/(currentBudget))*100).toFixed(2)}%`},
-          {label:"Transactions",value:totalTransactions.toLocaleString('en-US'),Change:"+5%"}
+          {label:"Transactions",value:totalTransactions.toLocaleString('en-US'),Change:"100%"}
         ]
 
         //setcheckIsbudgetAvailable(avialblebudget)

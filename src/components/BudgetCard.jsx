@@ -24,7 +24,9 @@ export default function BudgetCard({ darkMode, budget, tempBudget, setTempBudget
         <div className="flex-1 w-full max-w-md">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <div className="relative flex-1">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-bold text-gray-400">$</span>
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-bold text-gray-400">
+                Rs 
+              </span>
               <input
                 type="number"
                 value={tempBudget}

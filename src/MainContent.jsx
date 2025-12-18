@@ -184,6 +184,7 @@ export default function MainContent() {
         darkMode={darkMode}
         summary={aiSummary || {}}
         onSave={handleSaveExpense}
+        setError={setError}
       />
       
       <AIChat darkMode={darkMode} />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Sparkles, Calendar, Tag, DollarSign } from 'lucide-react';
 import axios from 'axios';
 
-export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onSave }) {
+export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onSave,setError }) {
   if (!isOpen) return null;
 
   const { name, category, amount, date,type } = summary;
@@ -34,18 +34,18 @@ export default function AISummaryModal({ isOpen, onClose, darkMode, summary, onS
               Authorization:`Bearer ${userToken}`}
           })
           .then((res)=>{
-            console.log(res.data);
+            console.log(res);
             console.log("success");
             onSave()
-            window.location.reload()
+            //window.location.reload()
           })
           .catch((error)=>{
             console.log(error);
-            
+            //declinemessage\
           })
     } catch (error) {
       console.log(error);
-      
+      setError({ message: error.response?.data?.message || error.message });
     }
   }
 

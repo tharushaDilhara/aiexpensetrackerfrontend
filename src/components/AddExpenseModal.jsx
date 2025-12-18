@@ -41,21 +41,37 @@ export default function AddExpenseModal({ isOpen, onClose, darkMode, onAnalyse, 
     setLoading(true);
     try {
       const res = await axios.post("http://localhost:3000/api/v1/aigeneratedtext", { receiptText });
-      setLoading(false);
+      
+      console.log(res);
+      
+      if (res.statusText==="OK") {
+        setLoading(false);
 
-      const extracted = {
-        name: res.data.data.name,
-        amount: res.data.data.amount,
-        category: res.data.data.category,
-        date: res.data.data.date || new Date().toLocaleDateString(),
-        type: res.data.data.type,
-      };
+        const extracted = {
+          name: res.data.data.name,
+          amount: res.data.data.amount,
+          category: res.data.data.category,
+          date: res.data.data.date || new Date().toLocaleDateString(),
+          type: res.data.data.type,
+        };
+        console.log(res.data.data);
+        setReceiptText("");
+        onAnalyse(res.data.data);
 
-      setReceiptText("");
-      onAnalyse(extracted);
+        return;
+      }
+      onAnalyse(res);
+      setError({ message: error.response?.data?.message || error.message });
+      console.log(res);
+      
+     
     } catch (error) {
+      console.log(error.message);
+      
       setError({ message: error.response?.data?.message || error.message });
       setLoading(false);
+      
+      
     }
   };
 
